@@ -26,19 +26,19 @@ class ActionButton extends StatelessWidget {
         minHeight: 40.0,
       ),
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6),
-          ),
-          backgroundColor: type == ActionButtonType.secondary
-              ? Color.fromARGB(255, 14, 53, 230)
-              : const Color.fromARGB(255, 12, 102, 248),
-        ),
+        // style: ElevatedButton.styleFrom(
+        //   padding: const EdgeInsets.symmetric(
+        //     horizontal: 16,
+        //     vertical: 8,
+        //   ),
+        //   elevation: 0,
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(6),
+        //   ),
+        //   backgroundColor: type == ActionButtonType.secondary
+        //       ? Color.fromARGB(255, 14, 53, 230)
+        //       : const Color.fromARGB(255, 12, 102, 248),
+        // ),
         onPressed: onPressed,
         child: Text(
           text,

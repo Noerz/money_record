@@ -8,5 +8,7 @@ abstract class Endpoints {
   static const String dompet = '/api/v1/dompet/user';
   static const String addDompet = '/api/v1/dompet';
   static const String profile= '/api/v1/profile';
+  static const String profilePicture= '/api/v1/profile/picture';
+  static const String changeProfilePicture= '/api/v1/profile//change-picture';
 
 }

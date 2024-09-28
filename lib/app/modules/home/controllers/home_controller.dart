@@ -11,6 +11,7 @@ class HomeController extends GetxController {
       Get.find<TransaksiController>();
 // Reactive property to hold the user's name
   RxString get userName => _profileController.fullName;
+  RxString get profile => _profileController.profilePictureUrl;
   @override
   void onInit() {
     super.onInit();

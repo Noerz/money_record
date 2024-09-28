@@ -1,4 +1,5 @@
 import 'package:catatan_keuangan/app/data/models/dompet_model.dart';
+import 'package:catatan_keuangan/app/globals_widget/dialog/delete_dialog.dart';
 import 'package:catatan_keuangan/app/modules/dompet/views/add_dompet_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,13 +13,7 @@ class DompetView extends GetView<DompetController> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'Daftar Dompet',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        backgroundColor: Colors.blueAccent,
-        elevation: 0,
+        title: Text('Daftar Dompet'),
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
@@ -30,15 +25,15 @@ class DompetView extends GetView<DompetController> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.warning_amber_rounded,
-                    size: 100, color: Colors.orange),
+                Icon(Icons.warning_amber_rounded, size: 100, color: Colors.orange),
                 SizedBox(height: 20),
                 Text(
                   controller.errorMessage.value,
                   style: TextStyle(
-                      color: Colors.orange,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold),
+                    color: Colors.orange,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
@@ -68,8 +63,7 @@ class DompetView extends GetView<DompetController> {
                     contentPadding: EdgeInsets.all(16),
                     leading: CircleAvatar(
                       backgroundColor: Colors.blueAccent,
-                      child: Icon(Icons.account_balance_wallet,
-                          color: Colors.white),
+                      child: Icon(Icons.account_balance_wallet, color: Colors.white),
                     ),
                     title: Text(
                       dompet.nama,
@@ -90,13 +84,14 @@ class DompetView extends GetView<DompetController> {
                         Text(
                           'Saldo: Rp ${dompet.saldo.toString().replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => '.')}',
                           style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.green),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.green,
+                          ),
                         ),
                       ],
                     ),
-                    onTap: () => _showDeleteConfirmationDialog(context, dompet),
+                    onTap: () => _showDeleteConfirmation(context, dompet), // Mengoper context ke metode
                   ),
                 ),
               );
@@ -121,21 +116,20 @@ class DompetView extends GetView<DompetController> {
     );
   }
 
-  void _showDeleteConfirmationDialog(BuildContext context, Dompet dompet) {
-    Get.defaultDialog(
-      title: "Delete Dompet",
-      middleText: "Are you sure you want to delete ${dompet.nama}?",
-      textCancel: "Cancel",
-      textConfirm: "Delete",
-      confirmTextColor: Colors.white,
-      onCancel: () {
-        Get.back();
-      },
-      onConfirm: () async {
-        await controller.deleteDompet(dompet.idDompet);
-        Get.back();
-        controller.fetchDompet(); // Refresh dompet list after deletion
-      },
-    );
+  void _showDeleteConfirmation(BuildContext context, Dompet dompet) async {
+  bool shouldDelete = await deleteDialog(
+    context,
+    title: "Warning",
+    description: "Are you sure you want to delete '${dompet.nama}'?",
+    cancelButtonText: "No",
+    confirmButtonText: "Yes",
+  );
+
+  if (shouldDelete) {
+    // Lakukan tindakan penghapusan
+    await controller.deleteDompet(dompet.idDompet);
+    controller.fetchDompet(); // Refresh dompet list setelah penghapusan
   }
+}
+
 }

@@ -47,9 +47,14 @@ class HomeView extends GetView<HomeController> {
                         ),
                       ),
                       // Optionally, add a profile icon or other actions
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        child: Icon(Icons.person, color: Colors.blue.shade600),
+                      Obx(
+                        () => CircleAvatar(
+                          backgroundColor: Colors.white,
+                          backgroundImage: controller.profile.value.isNotEmpty
+                              ? NetworkImage(controller.profile.value)
+                              : AssetImage('assets/images/logo-smk.png')
+                                  as ImageProvider,
+                        ),
                       ),
                     ],
                   ),
@@ -78,16 +83,21 @@ class HomeView extends GetView<HomeController> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _buildIconWithText(Icons.add_circle_outline, 'Tambah Saldo', Colors.green, () {
+                      _buildIconWithText(Icons.add_circle_outline,
+                          'Tambah Saldo', Colors.green, () {
                         Get.toNamed("/transaksi");
                       }),
-                      _buildIconWithText(Icons.remove_circle_outline, 'Ambil Saldo', Colors.red, () {
+                      _buildIconWithText(Icons.remove_circle_outline,
+                          'Ambil Saldo', Colors.red, () {
                         Get.toNamed("/transaksi-reduce");
                       }),
-                      _buildIconWithText(Icons.account_balance_wallet, 'Dompet', Colors.orange, () {
+                      _buildIconWithText(
+                          Icons.account_balance_wallet, 'Dompet', Colors.orange,
+                          () {
                         Get.toNamed("/dompet");
                       }),
-                      _buildIconWithText(Icons.apps, 'Lainnya', Colors.purple, () {
+                      _buildIconWithText(Icons.apps, 'Lainnya', Colors.purple,
+                          () {
                         Get.toNamed("/more");
                       }),
                     ],
@@ -115,7 +125,8 @@ class HomeView extends GetView<HomeController> {
               child: Obx(() {
                 return AnimatedSwitcher(
                   duration: Duration(milliseconds: 500),
-                  transitionBuilder: (Widget child, Animation<double> animation) {
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
                     return FadeTransition(opacity: animation, child: child);
                   },
                   child: controller.transaksiList.isEmpty
@@ -127,10 +138,12 @@ class HomeView extends GetView<HomeController> {
                           itemBuilder: (context, index) {
                             final transaksi = controller.transaksiList[index];
                             return GestureDetector(
-                              onTap: () => Get.toNamed('/detail-transaksi', arguments: transaksi),
+                              onTap: () => Get.toNamed('/detail-transaksi',
+                                  arguments: transaksi),
                               child: _buildTransactionTile(
                                 transaksi.namaTransaksi,
-                                DateFormat('yyyy-MM-dd').format(transaksi.tanggal),
+                                DateFormat('yyyy-MM-dd')
+                                    .format(transaksi.tanggal),
                                 transaksi.jumlah,
                                 Icons.attach_money,
                               ),
@@ -178,7 +191,8 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget _buildIconWithText(IconData icon, String text, Color color, VoidCallback onTap) {
+  Widget _buildIconWithText(
+      IconData icon, String text, Color color, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Column(
@@ -197,7 +211,8 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  Widget _buildTransactionTile(String title, String date, int amount, IconData icon) {
+  Widget _buildTransactionTile(
+      String title, String date, int amount, IconData icon) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       child: Card(

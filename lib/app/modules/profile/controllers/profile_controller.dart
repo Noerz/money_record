@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:get/get.dart';
 import 'package:catatan_keuangan/app/data/models/user_model.dart';
 import 'package:catatan_keuangan/app/data/repositories/profile/profile_repository.dart';
+import 'package:image_picker/image_picker.dart'; // Add this for image picking
 
 class ProfileController extends GetxController {
   final _profileRepository = Get.find<ProfileRepository>();
@@ -9,6 +11,7 @@ class ProfileController extends GetxController {
   var isLoading = false.obs;
   var errorMessage = ''.obs;
   var isEditing = false.obs;
+  var profilePictureUrl = ''.obs;
 
   // Editable fields
   var fullName = ''.obs;
@@ -33,8 +36,12 @@ class ProfileController extends GetxController {
       adress.value = userProfile?.adress ?? '';
       noHp.value = userProfile?.noHp ?? '';
       gender.value = userProfile?.gender ?? 'Male'; // Set default if null
+      profilePictureUrl.value=userProfile?.image??'';
 
       errorMessage('');
+
+      // // Fetch profile picture
+      // profilePictureUrl.value = await _profileRepository.getProfilePicture();
     } catch (e) {
       errorMessage('Failed to load profile: $e');
     } finally {
@@ -62,6 +69,35 @@ class ProfileController extends GetxController {
       errorMessage('Failed to update profile: $e');
     } finally {
       isLoading(false);
+    }
+  }
+
+  Future<void> updateProfilePicture(File imageFile) async {
+    
+  try {
+    isLoading(true);
+    await _profileRepository.updateProfilePicture(imageFile);
+    
+    // Refresh the profile data
+    await fetchProfile();
+
+    // Update profilePictureUrl to reflect the new image
+    profilePictureUrl.value = profile.value?.image ?? ''; // Update this to reflect the new image path
+  } catch (e) {
+    errorMessage('Failed to update profile picture: $e');
+  } finally {
+    isLoading(false);
+  }
+}
+
+
+  Future<void> pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      final File file = File(pickedFile.path);
+      await updateProfilePicture(file);
     }
   }
 }

@@ -22,6 +22,7 @@ class DetailTransaksiView extends GetView<DetailTransaksiController> {
         elevation: 0,
       ),
       body: Container(
+        height: MediaQuery.of(context).size.height,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
@@ -137,35 +138,84 @@ class DetailTransaksiView extends GetView<DetailTransaksiController> {
   }
 
   Future<void> _printPdf(Transaksi transaksi) async {
-    final pdf = pw.Document();
+  final pdf = pw.Document();
 
-    // Create a PDF page
-    pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) {
-          return pw.Column(
+  // Create a PDF page
+  pdf.addPage(
+    pw.Page(
+      build: (pw.Context context) {
+        return pw.Container(
+          padding: const pw.EdgeInsets.all(20),
+          child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
+              // Header
+              pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Text("Laporan Keuangan",
+                      style: pw.TextStyle(
+                          fontSize: 24,
+                          fontWeight: pw.FontWeight.bold)),
+                  // Uncomment the next line to add a logo
+                  // pw.Image(pw.MemoryImage(logoBytes), width: 100), 
+                ],
+              ),
+              pw.Divider(thickness: 2),
+              pw.SizedBox(height: 20),
+
+              // Transaction Details
               pw.Text("Detail Transaksi",
                   style: pw.TextStyle(
-                      fontSize: 24, fontWeight: pw.FontWeight.bold)),
-              pw.SizedBox(height: 20),
-              pw.Text(
-                  "Nama Transaksi: ${transaksi.namaTransaksi.capitalizeFirst}"),
-              pw.Text(
-                  "Tanggal: ${DateFormat('dd MMMM yyyy').format(transaksi.tanggal)}"),
-              pw.Text("Keterangan: ${transaksi.keterangan.capitalizeFirst}"),
-              pw.Text("Jenis: ${transaksi.jenis?.capitalizeFirst ?? 'N/A'}"),
-              pw.Text(
-                  "Jumlah: Rp ${NumberFormat('#,##0', 'id_ID').format(transaksi.jumlah)}"),
-            ],
-          );
-        },
-      ),
-    );
+                      fontSize: 20, fontWeight: pw.FontWeight.bold)),
+              pw.SizedBox(height: 10),
+              pw.Table(
+                border: pw.TableBorder.all(),
+                children: [
+                  _buildTableRow("Nama Transaksi", 
+                      transaksi.namaTransaksi?.capitalizeFirst ?? 'N/A'),
+                  _buildTableRow("Tanggal", 
+                      DateFormat('dd MMMM yyyy').format(transaksi.tanggal)),
+                  _buildTableRow("Keterangan", 
+                      transaksi.keterangan?.capitalizeFirst ?? 'N/A'),
+                  _buildTableRow("Jenis", 
+                      transaksi.jenis?.capitalizeFirst ?? 'N/A'),
+                  _buildTableRow("Jumlah", 
+                      "Rp ${NumberFormat('#,##0', 'id_ID').format(transaksi.jumlah)}"),
+                ],
+              ),
 
-    // Trigger the print
-    await Printing.layoutPdf(
-        onLayout: (PdfPageFormat format) async => pdf.save());
-  }
+              // Footer
+              pw.SizedBox(height: 20),
+              pw.Text("Terima kasih telah menggunakan layanan kami!",
+                  style: pw.TextStyle(fontSize: 14)),
+            ],
+          ),
+        );
+      },
+    ),
+  );
+
+  // Trigger the print
+  await Printing.layoutPdf(
+      onLayout: (PdfPageFormat format) async => pdf.save());
+}
+
+// Helper function to create a table row
+pw.TableRow _buildTableRow(String label, String value) {
+  return pw.TableRow(
+    children: [
+      pw.Padding(
+        padding: const pw.EdgeInsets.all(8.0),
+        child: pw.Text(label,
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+      ),
+      pw.Padding(
+        padding: const pw.EdgeInsets.all(8.0),
+        child: pw.Text(value),
+      ),
+    ],
+  );
+}
+
 }

@@ -12,8 +12,6 @@ class MoreView extends GetView<MoreController> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Menu Lainnya'),
-        centerTitle: true,
-        backgroundColor: Colors.blue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -23,7 +21,7 @@ class MoreView extends GetView<MoreController> {
               icon: Icons.settings,
               text: "Settings",
               onTap: () {
-               Get.toNamed("/profile");
+                Get.toNamed("/profile");
               },
             ),
             _buildMenuItem(

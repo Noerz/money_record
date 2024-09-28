@@ -41,6 +41,48 @@ class ProfileView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Profile Picture with Pencil Icon
+              Center(
+                child: Stack(
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    GestureDetector(
+                      onTap: () async {
+                        await controller.pickImage(); // Call pickImage to select a new picture
+                      },
+                      child: CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        radius: 50,
+                        backgroundImage: user.image != null
+                            ? NetworkImage(user.image!)
+                            : AssetImage('assets/default_profile.png') as ImageProvider,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: () async {
+                          await controller.pickImage(); // Call to pick a new image
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                          ),
+                          padding: EdgeInsets.all(6), // Padding for the icon
+                          child: Icon(
+                            Icons.edit,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 16),
               _buildTextField(
                 label: 'Full Name',
                 initialValue: user.fullName ?? '',
@@ -63,26 +105,11 @@ class ProfileView extends StatelessWidget {
               ),
               SizedBox(height: 16),
               _buildGenderDropdown(
-                initialValue: user.gender ?? 'Male', // Default value
+                initialValue: user.gender ?? 'male', // Default value
                 enabled: controller.isEditing.value,
                 onChanged: (value) => controller.gender.value = value!,
               ),
               SizedBox(height: 16),
-              // Display profile image if exists
-              if (user.image != null)
-                Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10.0),
-                    child: Image.network(
-                      'URL_TO_YOUR_IMAGE_STORAGE/${user.image}',
-                      height: 150,
-                      width: 150,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              SizedBox(height: 16),
-              // Display toggle button for edit mode
               Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton(

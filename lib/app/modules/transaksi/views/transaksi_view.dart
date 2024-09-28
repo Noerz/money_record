@@ -1,3 +1,4 @@
+import 'package:catatan_keuangan/app/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Import for TextInputFormatter
 import 'package:get/get.dart';
@@ -24,7 +25,7 @@ class TransaksiView extends GetView<TransaksiController> {
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: AppColors.lightBlue,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
@@ -58,25 +59,30 @@ class TransaksiView extends GetView<TransaksiController> {
             ),
             SizedBox(height: 40),
             Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  controller.submitTransaksiAdd();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+              child: SizedBox(
+                width: double
+                    .infinity, // Membuat tombol selebar mungkin mengikuti padding kiri dan kanan
+                child: ElevatedButton(
+                  onPressed: () {
+                    controller.submitTransaksiAdd();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.lightBlue,
+                    foregroundColor: AppColors.white2,
+                    padding: EdgeInsets.symmetric(
+                        vertical: 16), // Hanya padding vertikal
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    elevation: 5,
+                    shadowColor: AppColors.blue1,
                   ),
-                  elevation: 5,
-                  shadowColor: Colors.blueAccent,
-                ),
-                child: Text(
-                  'Submit',
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                  child: Text(
+                    'Kirim',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -97,8 +103,10 @@ class TransaksiView extends GetView<TransaksiController> {
           NumberFormat.currency(locale: 'id', symbol: '', decimalDigits: 0);
 
       // Listen for changes in jumlah and update the text field
-      textController.text = currencyFormatter.format(Get.find<TransaksiController>().jumlah.value);
-      textController.selection = TextSelection.collapsed(offset: textController.text.length);
+      textController.text = currencyFormatter
+          .format(Get.find<TransaksiController>().jumlah.value);
+      textController.selection =
+          TextSelection.collapsed(offset: textController.text.length);
 
       return TextField(
         controller: textController,
